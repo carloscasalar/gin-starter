@@ -1,2 +1,2 @@
 # gin-starter
-Just a starter for (go) gin projects
+Just a starter for [Gin](https://gin-gonic.com/) projects
