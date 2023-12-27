@@ -51,7 +51,7 @@ jobs:
       - name: Downloads the dependencies
         run: make download
 
-      - name: Lints all code with golangci-lint
+      - name: Lints all code
         run: make lint
 
       - name: Runs all tests

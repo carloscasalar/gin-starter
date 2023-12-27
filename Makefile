@@ -1,8 +1,7 @@
 SHELL=/bin/bash -e -o pipefail
 
 # constants
-GOLANGCI_VERSION = 1.51.0
-GOLANGCI_LINT = bin/golangci-lint-$(GOLANGCI_VERSION)
+REVIVE_VERSION = v1.3.4
 
 out:
 	@mkdir -pv "$(@)"
@@ -10,12 +9,9 @@ out:
 download: ## Downloads the dependencies
 	@go mod download
 
-$(GOLANGCI_LINT):
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b bin v$(GOLANGCI_VERSION)
-	@mv bin/golangci-lint "$(@)"
-
-lint: fmt $(GOLANGCI_LINT) download ## Lints all code with golangci-lint
-	@$(GOLANGCI_LINT) run
+lint: ## Lints all code with revive
+	@go install github.com/mgechev/revive@$(REVIVE_VERSION)
+	@revive -config revive.toml -formatter friendly ./...
 
 lint-reports: out/lint.xml
 
