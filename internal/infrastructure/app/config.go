@@ -7,11 +7,17 @@ import (
 
 type Config struct {
 	Port string `default:"8080"`
+	Log  LogConfig
+}
+
+type LogConfig struct {
+	Level     string `default:"info"`
+	Formatter string `default:"json"`
 }
 
 func ReadConfig() (*Config, error) {
 	var cfg Config
-	if err := envconfig.Process("SERVICE", &cfg); err != nil {
+	if err := envconfig.Process("API", &cfg); err != nil {
 		return nil, fmt.Errorf("error reading config: %w", err)
 	}
 

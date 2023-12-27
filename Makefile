@@ -15,11 +15,16 @@ fmt: ## Formats all code with go fmt
 test: ## Runs all tests
 	@go test -p 1 -v ./...
 
+run: export API_LOG_FORMATTER=text
+run: export API_LOG_LEVEL=debug
+run: ## Runs the application at 8080 port
+	@go run cmd/api/main.go
+
 coverage: out/report.json ## Displays coverage per func on cli
-	go tool cover -func=out/cover.out
+	@go tool cover -func=out/cover.out
 
 html-coverage: out/report.json ## Displays the coverage results in the browser
-	go tool cover -html=out/cover.out
+	@go tool cover -html=out/cover.out
 
 test-reports: out/report.json
 
