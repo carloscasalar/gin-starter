@@ -1,5 +1,13 @@
 # gin-starter
-Just a starter for [Gin](https://gin-gonic.com/) projects
+Just a starter for [Gin](https://gin-gonic.com/) projects.
+It uses [logrus](https://github.com/sirupsen/logrus) for logging.
+
+## Env vars
+| Name | Description | Default |
+|------|-------------|---------|
+| API_PORT | Port to listen to | 8080 |
+| API_LOG_FORMATTER | Log formatter to use | text |
+| API_LOG_LEVEL | Log level to use | debug |
 
 ## Start the service
 To start the server you can use make:
@@ -7,7 +15,7 @@ To start the server you can use make:
 make run
 ```
 
-You can also use env vars to modify the behaviour of the server:
+You can also use env vars to modify the behaviour of the server like this:
 ```bash
 API_PORT=3000 API_LOG_FORMATTER=json API_LOG_LEVEL=info make run
 ```
