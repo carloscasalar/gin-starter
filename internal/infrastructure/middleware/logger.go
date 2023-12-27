@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 // StructuredLogger logs a gin HTTP request.
@@ -42,7 +44,7 @@ func StructuredLogger() gin.HandlerFunc {
 			WithField("path", param.Path).
 			WithField("latency", param.Latency.String())
 
-		if c.Writer.Status() >= 500 {
+		if c.Writer.Status() >= http.StatusInternalServerError {
 			logger.Error(param.ErrorMessage)
 		} else {
 			logger.Info(param.ErrorMessage)

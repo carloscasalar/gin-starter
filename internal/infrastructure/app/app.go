@@ -2,12 +2,15 @@ package app
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/carloscasalar/gin-starter/internal/infrastructure/middleware"
 	"github.com/carloscasalar/gin-starter/internal/infrastructure/status"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 type Instance struct {
@@ -38,12 +41,14 @@ func (i *Instance) Start(ctx context.Context) error {
 	v1.GET("/status", status.Handler)
 
 	port := fmt.Sprintf(":%v", i.config.Port)
+	const readHeaderSecondsTimeout = 3
 	i.srv = &http.Server{
-		Addr:    port,
-		Handler: router,
+		Addr:              port,
+		Handler:           router,
+		ReadHeaderTimeout: readHeaderSecondsTimeout * time.Second,
 	}
 
-	if err := i.srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := i.srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 
@@ -51,9 +56,5 @@ func (i *Instance) Start(ctx context.Context) error {
 }
 
 func (i *Instance) Stop(ctx context.Context) error {
-	if err := i.srv.Shutdown(ctx); err != nil {
-		return err
-	}
-
-	return nil
+	return i.srv.Shutdown(ctx)
 }

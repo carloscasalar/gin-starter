@@ -1,13 +1,23 @@
 SHELL=/bin/sh -e -o pipefail
 
 # constants
-GOLANGCI_VERSION = 1.48.0
+GOLANGCI_VERSION = 1.52.2
+GOLANGCI_LINT = bin/golangci-lint-$(GOLANGCI_VERSION)
 
 out:
 	@mkdir -pv "$(@)"
 
 download: ## Downloads the dependencies
 	@go mod download
+
+$(GOLANGCI_LINT):
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b bin v$(GOLANGCI_VERSION)
+	@mv bin/golangci-lint "$(@)"
+
+lint: fmt $(GOLANGCI_LINT) download ## Lints all code with golangci-lint
+	@$(GOLANGCI_LINT) run
+
+lint-reports: out/lint.xml
 
 fmt: ## Formats all code with go fmt
 	@go fmt ./...

@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	"github.com/carloscasalar/gin-starter/internal/infrastructure/app"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/carloscasalar/gin-starter/internal/infrastructure/app"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -36,10 +37,10 @@ func gracefulShutdownOnSigIntOrTerm(onStopFn func(ctx context.Context) error) {
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	<-c
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	const shutdownSecondsTimeout = 5
+	ctx, cancel := context.WithTimeout(context.Background(), shutdownSecondsTimeout*time.Second)
 	defer cancel()
 	if err := onStopFn(ctx); err != nil {
-		log.Fatalf("Unable to shut down gracefully: %v", err)
+		log.Errorf("Unable to shut down gracefully: %v", err)
 	}
-	os.Exit(1)
 }

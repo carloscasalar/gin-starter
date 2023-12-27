@@ -1,18 +1,25 @@
 package app
 
 import (
+	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
+)
+
+var (
+	ErrInvalidLogFormat = errors.New("unknown log format, valid values are 'text' or 'json'")
+	ErrInvalidLogLevel  = errors.New("unknown log level, valid values are 'trace', 'debug', 'info', 'warn', 'error', 'fatal' or 'panic'")
 )
 
 func ConfigureLogger(cfg LogConfig) error {
 	if err := setLogLevel(cfg.Level); err != nil {
-		return fmt.Errorf("failed to set log-level: %v", err)
+		return fmt.Errorf("failed to set log-level: %w", err)
 	}
 
 	if err := setLogFormat(cfg.Formatter); err != nil {
-		return fmt.Errorf("failed to set log format: %v", err)
+		return fmt.Errorf("failed to set log format: %w", err)
 	}
 
 	return nil
@@ -25,7 +32,7 @@ func setLogFormat(format string) error {
 	case "json":
 		log.SetFormatter(&log.JSONFormatter{})
 	default:
-		return fmt.Errorf("unknown log format %q, valid values are 'text' or 'json'", format)
+		return ErrInvalidLogFormat
 	}
 
 	return nil
@@ -50,7 +57,7 @@ func setLogLevel(levelName string) error {
 	case "panic":
 		logLevel = log.PanicLevel
 	default:
-		return fmt.Errorf("unknown log level %q, valid values are 'trace', 'debug', 'info', 'warn', 'error', 'fatal' or 'panic'", levelName)
+		return ErrInvalidLogLevel
 	}
 
 	log.SetLevel(logLevel)
