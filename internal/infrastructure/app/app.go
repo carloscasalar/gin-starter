@@ -48,6 +48,7 @@ func (i *Instance) Start(ctx context.Context) error {
 		ReadHeaderTimeout: readHeaderSecondsTimeout * time.Second,
 	}
 
+	log.WithContext(ctx).Infof("Server started listening on port %v", i.config.Port)
 	if err := i.srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
