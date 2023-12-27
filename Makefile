@@ -1,4 +1,4 @@
-SHELL=/bin/sh -e -o pipefail
+SHELL=/bin/bash -e -o pipefail
 
 # constants
 GOLANGCI_VERSION = 1.52.2
