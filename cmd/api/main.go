@@ -2,12 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/carloscasalar/gin-starter/internal/infrastructure/app"
-	"github.com/carloscasalar/gin-starter/internal/infrastructure/middleware"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,35 +17,15 @@ func main() {
 
 	cfg, err := app.ReadConfig()
 	if err != nil {
-		log.Errorf("unable to start the app: %v", err)
+		log.Errorf("unable to start the API: %v", err)
 		os.Exit(1)
 	}
-	if err := app.ConfigureLogger(cfg.Log); err != nil {
-		log.Errorf("unable to configure logger: %v", err)
-		os.Exit(1)
-	}
-	log.Debugf("api configuration %v", cfg)
 
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
-	router.Use(
-		middleware.StructuredLogger(),
-		gin.Recovery(),
-	)
-	v1 := router.Group("/v1")
-	v1.GET("/status", statusHandler)
-
-	port := fmt.Sprintf(":%v", cfg.Port)
-	srv := &http.Server{
-		Addr:    port,
-		Handler: router,
-	}
-
-	// Initializing the server in a goroutine so that
-	// it won't block the graceful shutdown handling below
+	api := app.New(cfg)
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+		if err := api.Start(ctx); err != nil {
+			log.WithContext(ctx).Errorf("unable to start the API: %v", err)
+			os.Exit(1)
 		}
 	}()
 
@@ -61,13 +37,9 @@ func main() {
 	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := api.Stop(ctx); err != nil {
 		log.Fatal("Server forced to shutdown: ", err)
 	}
 
 	log.Info("Server exiting")
-}
-
-func statusHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "server is ready and healthy"})
 }
