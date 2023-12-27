@@ -1,7 +1,7 @@
 SHELL=/bin/bash -e -o pipefail
 
 # constants
-GOLANGCI_VERSION = 1.52.2
+GOLANGCI_VERSION = 1.51.0
 GOLANGCI_LINT = bin/golangci-lint-$(GOLANGCI_VERSION)
 
 out:
