@@ -46,7 +46,9 @@ func getPayload(t *testing.T, resp *http.Response) statusResponse {
 }
 
 func setupServer() http.Handler {
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Use(gin.Recovery())
 
 	r.GET("/status", status.Handler)
 	return r
