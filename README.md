@@ -3,11 +3,11 @@ Just a starter for [Gin](https://gin-gonic.com/) projects.
 It uses [logrus](https://github.com/sirupsen/logrus) for logging.
 
 ## Env vars
-| Name | Description | Default |
-|------|-------------|---------|
-| API_PORT | Port to listen to | 8080 |
-| API_LOG_FORMATTER | Log formatter to use | text |
-| API_LOG_LEVEL | Log level to use | debug |
+| Name                  | Description          | Default |
+|-----------------------|----------------------|---------|
+| `API_PORT`            | Port to listen to    | 8080    |
+| `API_LOG_FORMATTER`   | Log formatter to use | text    |
+| `API_LOG_LEVEL`       | Log level to use     | debug   |
 
 ## Start the service
 To start the server you can use make:
