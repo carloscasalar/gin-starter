@@ -25,7 +25,7 @@ func (i *Instance) Start(ctx context.Context) error {
 	if err := ConfigureLogger(i.config.Log); err != nil {
 		return fmt.Errorf("unable to configure logger: %w", err)
 	}
-	log.WithContext(ctx).Debugf("api configuration %v", i.config)
+	log.WithContext(ctx).Debugf("Api configuration: %v", i.config)
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
