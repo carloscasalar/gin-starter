@@ -2,12 +2,24 @@ SHELL=/bin/bash -e -o pipefail
 
 # constants
 REVIVE_VERSION = v1.3.4
+DOCKER_REPO = api
+DOCKER_TAG = latest
 
 out:
 	@mkdir -pv "$(@)"
 
 download: ## Downloads the dependencies
 	@go mod download
+
+build: out/bin ## Builds all binaries
+
+GO_BUILD = mkdir -pv "$(@)" && go build -ldflags="-w -s" -o "$(@)" ./...
+.PHONY: out/bin
+out/bin:
+	$(GO_BUILD)
+
+docker: ## Builds docker image
+	docker buildx build -t $(DOCKER_REPO):$(DOCKER_TAG) .
 
 lint: ## Lints all code with revive
 	@go install github.com/mgechev/revive@$(REVIVE_VERSION)
@@ -25,6 +37,9 @@ run: export API_LOG_FORMATTER=text
 run: export API_LOG_LEVEL=debug
 run: ## Runs the application at 8080 port
 	@go run cmd/api/main.go
+
+run-docker: fmt build docker ## Runs the trick inside docker
+	docker run --rm -it -p8080:8080 --env API_LOG_FORMATTER="text" $(DOCKER_REPO):$(DOCKER_TAG)
 
 coverage: out/report.json ## Displays coverage per func on cli
 	@go tool cover -func=out/cover.out
