@@ -11,9 +11,12 @@ It uses [logrus](https://github.com/sirupsen/logrus) for logging.
 
 ## Start the service
 To start the server you can use make:
+
 ```bash
 make run
 ```
+
+Then you can point to `http://localhost:8080/v1/status` and you should see a message telling that the service is ready and healthy.
 
 You can also use env vars to modify the behaviour of the server like this:
 ```bash
