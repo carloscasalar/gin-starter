@@ -10,4 +10,16 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
-      batch: true
+    open-pull-requests-limit: 10
+    versioning-strategy: auto
+    groups:
+      patches:
+        patterns:
+          - "*"
+        update-types:
+          - patch
+      minors:
+        patterns:
+          - "*"
+        update-types:
+          - minor
